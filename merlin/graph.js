@@ -1,16 +1,21 @@
 class Graph {
   constructor(nCell, rounds) {
+    this.n = Math.pow(2, nCell);
     this.zeroes = new Array(nCell).fill('0');
-    this.nodes = new Array(Math.pow(2, nCell));
-    this.data = new Array(Math.pow(2, nCell));
+    this.nodes = new Array(this.n);
+    this.matrix = new Array(this.n);
+    this.list = new Array(this.n);
     this.rounds = rounds;
-    for (let i = 0; i < this.nodes.length; i++)
-      this.data[i] = new Array(Math.pow(2, nCell)).fill(0);
+    for (let i = 0; i < this.nodes.length; i++) {
+      this.matrix[i] = new Array(this.n).fill(0);
+      this.list[i] = new Array();
+    }
     for (let i = 0; i < this.nodes.length; i++) {
       this.nodes[i] = this.toMerlin(i);
       for (let j = 0; j < this.rounds.length; j++) {
         const newNodeNum = this.toNumber(this.applyRound(this.nodes[i], j));
-        this.data[newNodeNum][i] = 1;
+        this.matrix[i][newNodeNum] = 1;
+        this.list[i].push(newNodeNum);
       }
     }
   }
@@ -44,4 +49,5 @@ const obj = new Graph(4, [
 // console.log(obj.toNumber(obj.nodes[2]));
 // console.log(obj.toMerlin(4));
 // console.log(obj.rounds);
-console.log(obj.data);
+// console.log(obj.matrix);
+console.log(obj.list);
