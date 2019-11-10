@@ -16,6 +16,24 @@ function nCellHandler() {
   const graphInst = container[opt];
   const board = document.getElementById('board');
   while (board.firstChild) board.removeChild(board.firstChild);
+  const captionText = document.createElement('p');
+  captionText.innerHTML = 'Legenda:';
+  const caption = document.createElement('div');
+  caption.id = 'caption';
+  for (let i = 0; i < 2; i++) {
+    const captionBox = document.createElement('div');
+    const text = document.createElement('p');
+    const box = document.createElement('div');
+    captionBox.className = 'caption';
+    text.innerHTML = `${i}`;
+    box.className = 'caption-box';
+    box.style.background = i ? 'green' : 'blue';
+    captionBox.appendChild(text);
+    captionBox.appendChild(box);
+    caption.appendChild(captionBox);
+  }
+  board.appendChild(captionText);
+  board.appendChild(caption);
   const mySel = document.createElement('select');
   mySel.appendChild(document.createElement('option'));
   mySel.onchange = moveHandler;
