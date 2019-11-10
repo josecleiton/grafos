@@ -1,7 +1,7 @@
 class Graph {
   constructor(nCell, rounds) {
     this.n = Math.pow(2, nCell);
-    this.zeroes = new Array(nCell).fill('0');
+    this.zeroes = new Array(Number(nCell)).fill('0');
     this.nodes = new Array(this.n);
     this.matrix = new Array(this.n);
     this.list = new Array(this.n);
@@ -32,22 +32,26 @@ class Graph {
   }
   toMerlin(number) {
     const tmpArr = number.toString(2).split('');
+    // console.log(this.zeroes.slice(0, this.zeroes.length - tmpArr.length));
     return this.zeroes
       .slice(0, this.zeroes.length - tmpArr.length)
       .concat(tmpArr);
   }
 }
 
-const obj = new Graph(4, [
-  [1, 1, 0, 0],
-  [0, 0, 1, 1],
-  [1, 0, 1, 0],
-  [0, 1, 0, 1],
-]);
+const container = new Array(10);
+let active = null;
+
+// const obj = new Graph(4, [
+//   [1, 1, 0, 0],
+//   [0, 0, 1, 1],
+//   [1, 0, 1, 0],
+//   [0, 1, 0, 1],
+// ]);
 
 // console.log(obj.nodes);
 // console.log(obj.toNumber(obj.nodes[2]));
 // console.log(obj.toMerlin(4));
 // console.log(obj.rounds);
 // console.log(obj.matrix);
-console.log(obj.list);
+// console.log(obj.list);

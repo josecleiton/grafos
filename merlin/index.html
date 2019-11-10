@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>Merlin</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <h1>Merlin</h1>
+    <p>
+      <label>Tamanho da matriz</label>
+      <select id="sel" onchange="nCellHandler()"
+        ><option value="">--</option
+        ><option value="4">4 -> 2^4 elementos</option>
+        <option value="9">9 -> 2^9 elementos</option></select
+      >
+    </p>
+    <div id="board"></div>
+    <div id="container"></div>
+    <script src="graph.js"></script>
+    <script src="render.js"></script>
+  </body>
+</html>
