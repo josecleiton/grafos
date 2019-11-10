@@ -23,7 +23,7 @@ class Graph {
     const round = this.rounds[index];
     const merlin = [...toApply];
     for (let i = 0; i < merlin.length; i++) {
-      merlin[i] = (Number(merlin[i]) + Number(round[i])) % 2;
+      merlin[i] = Number(merlin[i]) ^ Number(round[i]);
     }
     return merlin;
   }
