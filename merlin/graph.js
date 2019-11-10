@@ -1,6 +1,6 @@
 class Graph {
   constructor(nCell, rounds) {
-    this.n = Math.pow(2, nCell);
+    this.n = Math.pow(2, Number(nCell));
     this.zeroes = new Array(Number(nCell)).fill('0');
     this.nodes = new Array(this.n);
     this.matrix = new Array(this.n);
@@ -21,7 +21,7 @@ class Graph {
   }
   applyRound(toApply, index) {
     const round = this.rounds[index];
-    let merlin = [...toApply];
+    const merlin = [...toApply];
     for (let i = 0; i < merlin.length; i++) {
       merlin[i] = (Number(merlin[i]) + Number(round[i])) % 2;
     }
