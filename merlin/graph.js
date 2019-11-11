@@ -13,14 +13,15 @@ class Graph {
     for (let i = 0; i < this.nodes.length; i++) {
       this.nodes[i] = this.toMerlin(i);
       for (let j = 0; j < this.rounds.length; j++) {
-        const newNodeNum = this.toNumber(this.applyRound(this.nodes[i], j));
+        const newNodeNum = this.toNumber(
+          this.applyRound(this.nodes[i], this.rounds[j]),
+        );
         this.matrix[i][newNodeNum] = 1;
         this.list[i].push(newNodeNum);
       }
     }
   }
-  applyRound(toApply, index) {
-    const round = this.rounds[index];
+  applyRound(toApply, round) {
     const merlin = [...toApply];
     for (let i = 0; i < merlin.length; i++) {
       merlin[i] = Number(merlin[i]) ^ Number(round[i]);
@@ -37,9 +38,18 @@ class Graph {
       .slice(0, this.zeroes.length - tmpArr.length)
       .concat(tmpArr);
   }
+  get winCondition() {
+    switch (Math.log2(this.n)) {
+      case 4:
+        return [0, 0, 1, 0];
+      case 9:
+        return [0, 0, 0, 0, 0, 0, 1, 0, 0];
+    }
+  }
 }
 
 const container = new Array(10);
+const DP = new Array(10);
 let active = null;
 
 // const obj = new Graph(4, [

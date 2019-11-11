@@ -1,5 +1,14 @@
-function nCellHandler() {
+function cleanBoard() {
+  const board = document.getElementById('board');
+  if (board) {
+    while (board.firstChild) board.removeChild(board.firstChild);
+  }
+  return board;
+}
+
+async function nCellHandler() {
   const selIn = document.getElementById('sel');
+  const board = cleanBoard();
   const selected = selIn.selectedIndex;
   if (!selected) return;
   const opt = selIn.options[selected].value;
@@ -14,8 +23,7 @@ function nCellHandler() {
   }
   active = opt;
   const graphInst = container[opt];
-  const board = document.getElementById('board');
-  while (board.firstChild) board.removeChild(board.firstChild);
+  // pathToWin(graphInst);
   const captionText = document.createElement('p');
   captionText.innerHTML = 'Legenda:';
   const caption = document.createElement('div');
@@ -94,4 +102,62 @@ function moveHandler(e) {
     containerEl.appendChild(matrixGenerator(node));
   }
   board.appendChild(containerEl);
+}
+
+async function pathToWin(graph) {
+  const winCondition = graph.toNumber(graph.winCondition);
+  const {matrix} = graph;
+  const attempts = 5;
+  const showResult = (graph, dp) => {
+    for (let i = 0; i < graph.n; i++) {
+      if (i !== winCondition)
+        console.log(
+          `caminho de ${i} para winCondition com ${attempts - 1} lances:`,
+          dp[i][winCondition][attempts - 1],
+        );
+    }
+  };
+  if (DP[Math.log2(graph.n)]) {
+    console.log(DP[Math.log2(graph.n)]);
+    return;
+  }
+  const dp = new Array(graph.n);
+  for (let i = 0; i < graph.n; i++) {
+    dp[i] = new Array(graph.n);
+    for (let j = 0; j < dp[i].length; j++) {
+      dp[i][j] = new Array(attempts);
+    }
+  }
+  const shortestPath = async (graph, attempts) => {
+    const N = graph.length;
+    for (let at = 0; at < attempts; at++) {
+      for (let i = 0; i < N; i++) {
+        for (let j = 0; j < N; j++) {
+          dp[i][j][at] = Infinity;
+          if (!at && i === j) dp[i][j][at] = 0;
+          if (at === 1 && graph[i][j]) {
+            dp[i][j][at] = graph[i][j];
+          }
+          if (at > 1) {
+            for (let node = 0; node < N; node++) {
+              if (
+                graph[i][node] &&
+                i !== node &&
+                j !== node &&
+                dp[i][j][at - 1] !== Infinity
+              )
+                dp[i][j][at] = Math.min(
+                  dp[i][j][at],
+                  graph[i][node] + dp[node][j][at - 1],
+                );
+            }
+          }
+        }
+      }
+    }
+  };
+  await shortestPath(matrix, attempts);
+  showResult(graph, dp);
+  DP[Math.log2(graph.n)] = dp;
+  console.log(DP);
 }
