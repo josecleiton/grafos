@@ -46,6 +46,20 @@ class Graph {
         return [0, 0, 0, 0, 0, 0, 1, 0, 0];
     }
   }
+  bfs(source, target) {
+    const queue = [source];
+    const visited = {source: true};
+    while (queue.length) {
+      if (queue[0] === target) return true;
+      for (let i = 0; i < this.matrix[queue[0]].length; i++) {
+        if (this.matrix[queue[0]][i] && !visited[i]) {
+          queue.push(i);
+        }
+      }
+      queue.shift();
+    }
+    return false;
+  }
 }
 
 const container = new Array(10);

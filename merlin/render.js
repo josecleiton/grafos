@@ -1,3 +1,42 @@
+function draw() {
+  const matrix = container[active].matrix;
+  // console.log(matrix);
+  const board = cleanBoard();
+  const containerSigma = document.createElement('div');
+  containerSigma.setAttribute('id', 'sigma');
+  containerSigma.style.height = '85%';
+  board.appendChild(containerSigma);
+  const graph = {
+    nodes: [],
+    edges: [],
+  };
+  for (let i = 0; i < matrix.length; i++) {
+    const theta = ((2 * Math.PI) / 16) * (16 - i + 1);
+    // console.log(theta);
+    graph.nodes.push({
+      id: `n${i}`,
+      label: `Node ${i + 1}`,
+      x: Math.cos(theta),
+      y: Math.sin(theta),
+      size: 1,
+      color: '#111',
+    });
+    for (let j = 0; j < matrix[i].length; j++) {
+      if (matrix[i][j]) {
+        graph.edges.push({
+          id: `e${i}${j}`,
+          source: `n${i}`,
+          target: `n${j}`,
+          size: 0.5,
+          color: '#AAA',
+        });
+      }
+    }
+  }
+  console.log(graph);
+  const s = new sigma({graph, container: containerSigma});
+}
+
 function cleanBoard() {
   const board = document.getElementById('board');
   if (board) {
@@ -16,9 +55,9 @@ async function nCellHandler() {
   if (!container[opt]) {
     container[opt] = new Graph(opt, [
       [1, 1, 0, 0],
-      [0, 0, 1, 1],
-      [1, 0, 1, 0],
       [0, 1, 0, 1],
+      [0, 1, 1, 0],
+      [1, 1, 0, 1],
     ]);
   }
   active = opt;
@@ -45,7 +84,12 @@ async function nCellHandler() {
   const mySel = document.createElement('select');
   mySel.appendChild(document.createElement('option'));
   mySel.onchange = moveHandler;
+  const allGraph = document.createElement('button');
+  allGraph.innerHTML = 'Draw graph!';
+  allGraph.onclick = draw;
+  allGraph.style.marginLeft = '7.5%';
   board.appendChild(mySel);
+  board.appendChild(allGraph);
   for (let i = 0; i < graphInst.n; i++) {
     const optionEl = document.createElement('option');
     optionEl.value = optionEl.innerHTML = i.toString();
@@ -104,60 +148,60 @@ function moveHandler(e) {
   board.appendChild(containerEl);
 }
 
-async function pathToWin(graph) {
-  const winCondition = graph.toNumber(graph.winCondition);
-  const {matrix} = graph;
-  const attempts = 5;
-  const showResult = (graph, dp) => {
-    for (let i = 0; i < graph.n; i++) {
-      if (i !== winCondition)
-        console.log(
-          `caminho de ${i} para winCondition com ${attempts - 1} lances:`,
-          dp[i][winCondition][attempts - 1],
-        );
-    }
-  };
-  if (DP[Math.log2(graph.n)]) {
-    console.log(DP[Math.log2(graph.n)]);
-    return;
-  }
-  const dp = new Array(graph.n);
-  for (let i = 0; i < graph.n; i++) {
-    dp[i] = new Array(graph.n);
-    for (let j = 0; j < dp[i].length; j++) {
-      dp[i][j] = new Array(attempts);
-    }
-  }
-  const shortestPath = async (graph, attempts) => {
-    const N = graph.length;
-    for (let at = 0; at < attempts; at++) {
-      for (let i = 0; i < N; i++) {
-        for (let j = 0; j < N; j++) {
-          dp[i][j][at] = Infinity;
-          if (!at && i === j) dp[i][j][at] = 0;
-          if (at === 1 && graph[i][j]) {
-            dp[i][j][at] = graph[i][j];
-          }
-          if (at > 1) {
-            for (let node = 0; node < N; node++) {
-              if (
-                graph[i][node] &&
-                i !== node &&
-                j !== node &&
-                dp[i][j][at - 1] !== Infinity
-              )
-                dp[i][j][at] = Math.min(
-                  dp[i][j][at],
-                  graph[i][node] + dp[node][j][at - 1],
-                );
-            }
-          }
-        }
-      }
-    }
-  };
-  await shortestPath(matrix, attempts);
-  showResult(graph, dp);
-  DP[Math.log2(graph.n)] = dp;
-  console.log(DP);
-}
+// async function pathToWin(graph) {
+//   const winCondition = graph.toNumber(graph.winCondition);
+//   const {matrix} = graph;
+//   const attempts = 5;
+//   const showResult = (graph, dp) => {
+//     for (let i = 0; i < graph.n; i++) {
+//       if (i !== winCondition)
+//         console.log(
+//           `caminho de ${i} para winCondition com ${attempts - 1} lances:`,
+//           dp[i][winCondition][attempts - 1],
+//         );
+//     }
+//   };
+//   if (DP[Math.log2(graph.n)]) {
+//     console.log(DP[Math.log2(graph.n)]);
+//     return;
+//   }
+//   const dp = new Array(graph.n);
+//   for (let i = 0; i < graph.n; i++) {
+//     dp[i] = new Array(graph.n);
+//     for (let j = 0; j < dp[i].length; j++) {
+//       dp[i][j] = new Array(attempts);
+//     }
+//   }
+//   const shortestPath = async (graph, attempts) => {
+//     const N = graph.length;
+//     for (let at = 0; at < attempts; at++) {
+//       for (let i = 0; i < N; i++) {
+//         for (let j = 0; j < N; j++) {
+//           dp[i][j][at] = Infinity;
+//           if (!at && i === j) dp[i][j][at] = 0;
+//           if (at === 1 && graph[i][j]) {
+//             dp[i][j][at] = graph[i][j];
+//           }
+//           if (at > 1) {
+//             for (let node = 0; node < N; node++) {
+//               if (
+//                 graph[i][node] &&
+//                 i !== node &&
+//                 j !== node &&
+//                 dp[i][j][at - 1] !== Infinity
+//               )
+//                 dp[i][j][at] = Math.min(
+//                   dp[i][j][at],
+//                   graph[i][node] + dp[node][j][at - 1],
+//                 );
+//             }
+//           }
+//         }
+//       }
+//     }
+//   };
+//   await shortestPath(matrix, attempts);
+//   showResult(graph, dp);
+//   DP[Math.log2(graph.n)] = dp;
+//   console.log(DP);
+// }
