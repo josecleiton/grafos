@@ -11,7 +11,7 @@ function draw() {
     edges: [],
   };
   for (let i = 0; i < matrix.length; i++) {
-    const theta = ((2 * Math.PI) / 16) * (16 - i + 1);
+    const theta = ((2 * Math.PI) / matrix.length) * (matrix.length - i + 1);
     // console.log(theta);
     graph.nodes.push({
       id: `n${i}`,
@@ -24,7 +24,7 @@ function draw() {
     for (let j = 0; j < matrix[i].length; j++) {
       if (matrix[i][j]) {
         graph.edges.push({
-          id: `e${i}${j}`,
+          id: `e${i}-${j}`,
           source: `n${i}`,
           target: `n${j}`,
           size: 0.5,
