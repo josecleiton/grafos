@@ -27,29 +27,23 @@ function x=numDigPesos()
 endfunction
 
 function x=numDigFiltro(val)
-    x=(val > 0.5)*1.0
+    x=(val > 0.5)*1
 endfunction
 
 function x=numDigAplicaFiltro()
     pesosRaw = numDigPesos()
-    pesosBin = []
     AdotPesos = A * pesosRaw
     AdotPesosDisp = []
     [n, m] = size(AdotPesos)
+    pesosBin = zeros(n, m)
     printf("\n\tA*w | n: %d, m: %d\n", n, m)
-    printf("\n\tA*w\n")
+    printf("\n\tA*w:\n")
     disp(AdotPesos)
     for i=1:n
         for j=1:m
-            v = AdotPesos(i, j)
-            pesosBin = [pesosBin, numDigFiltro(v)]
+            pesosBin(i,j) = numDigFiltro(AdotPesos(i, j))
         end
-        low = (i-1)*m + 1
-        high = (i-1)*m+m
-        AdotPesosDisp = cat(1, AdotPesosDisp, pesosBin(low:high))
     end
-    printf("\n\tA*w formatada como matriz apenas para visualização:\n")
-    disp(AdotPesosDisp)
     x = pesosBin
 endfunction
 
